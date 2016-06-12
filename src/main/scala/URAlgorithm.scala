@@ -21,15 +21,17 @@ import java.util
 import io.prediction.controller.P2LAlgorithm
 import io.prediction.controller.Params
 import io.prediction.data
-import io.prediction.data.storage.{NullModel, PropertyMap, Event}
+import io.prediction.data.storage.{LEventAggregator, NullModel, PropertyMap, Event}
 import io.prediction.data.store.LEventStore
 import org.apache.mahout.math.cf.SimilarityAnalysis
 import org.apache.mahout.sparkbindings.indexeddataset.IndexedDatasetSpark
 import org.apache.spark.rdd.RDD
 import org.joda.time.DateTime
-import org.json4s
-import org.json4s.JsonAST
-import org.json4s.JsonAST._
+import org.json4s.JsonAST.JArray
+import org.json4s.JsonAST.JDouble
+import org.json4s.JsonAST.JString
+import org.json4s.JsonAST.JValue
+import org.json4s.DefaultFormats
 import scala.collection.JavaConverters._
 import scala.collection.immutable
 import scala.concurrent.duration.Duration
@@ -387,13 +389,12 @@ class URAlgorithm(val ap: URAlgorithmParams)
   /** Build a query from default algorithms params and the query itself taking into account defaults */
   def buildQuery(ap: URAlgorithmParams, query: Query, backfillFieldName: String = ""): (String, List[Event]) = {
 
-    try{ // require the minimum of a user or item, if not then return popular if any
-      //require( query.item.nonEmpty || query.user.nonEmpty, "Warning: a query must include either a user or item id")
+    try{
+
+      val itemSet = getBiasedItemSetContents(query)
 
       // create a list of all query correlators that can have a bias (boost or filter) attached
       val alluserEvents = getBiasedRecentUserActions(query)
-
-      val itemSet = getBiasedItemSetContents(query)
 
       // create a list of all boosted query correlators
       val recentUserHistory = if ( ap.userBias.getOrElse(1f) >= 0f )
@@ -595,30 +596,47 @@ class URAlgorithm(val ap: URAlgorithmParams)
     (rActions, recentEvents)
   }
 
-    /** Get recent events of the user on items to create the recommendations query from */
+  /** Get the ids attached to itemSet object as propeties, these will be used as the query--like shopping cart */
   def getBiasedItemSetContents(
     query: Query): Seq[BoostableCorrelators] = {
 
-    val items: List[String] = try {
-      val itemSetList = LEventStore.find(
+    logger.info(s"Qurey: ${query.toString}")
+    logger.info(s"Id for itemSet: ${query.itemSet.getOrElse("No ID")}")
+    val items = try {
+      val isEvents = LEventStore.find(
         appName = ap.appName,
-        // entityType and entityId is specified for fast lookup
         entityType = Some("itemSet"),
         entityId = query.itemSet,
-        // eventNames = Some(queryEventNames),// get all and separate later
-        // targetEntityType = None,
-        // limit = Some(maxQueryEvents), // this will get all history then each action can be limited before using in
-        // the query
-        // latest = true,
         // todo: set time limit to avoid super long DB access, should be configurable
         timeout = Duration(200, "millis")
-      ).toList.head.properties.fields("items").map(_.extract[String])
+      )
+
+      //logger.info(s"Got proptery events for itemSet: ${query.itemSet.getOrElse("No ID")}")
+
+      // this allows teh properties to be changed over time, so aggreagate to get the latest
+      val itemSet = LEventAggregator.aggregateProperties(isEvents).get(query.itemSet.getOrElse("No ID"))
+
+      //logger.info(s"Got aggregated properties: ${itemSet.toString()}")
+      //Got aggregated properties: Some(PropertyMap(Map(items -> JArray(List(JString(Iphone charger), JString(Iphone case), JString(Iphone earphones), JString(Iphone usb cable)))), 2016-06-13T19:59:21.402Z, 2016-06-13T19:59:21.402Z))
+
+      val isItems = itemSet.get.get[List[JValue]]("items")
+
+      logger.info(s"Got properties: ${isItems}")
+
+      isItems.map {
+        case JString(s) =>
+          //logger.info(s"got string ${s}")
+          s
+        case _ => // not sure what this is snf it's a minor error
+          logger.info("unrecognized property type")
+          ""
+      }
     } catch {
       case e: scala.concurrent.TimeoutException =>
         logger.error(s"Timeout when reading itemSet contents." +
           s" Empty list is used. ${e}")
         List.empty[String]
-      case e: NoSuchElementException => // todo: bad form to use an exception to check if there is a user id
+      case e: NoSuchElementException => // todo: bad form to use an exception to check if there is an id
         logger.info("No itemSet id for recs, may cause an empty query to Elasticsearch")
         List.empty[String]
       case e: Exception => // fatal because of error, an empty query
@@ -632,22 +650,6 @@ class URAlgorithm(val ap: URAlgorithmParams)
     List(BoostableCorrelators(ap.eventNames.head, items.distinct, itemSetBoost))
   }
 
-  /*
-      //val rActions = ap.eventNames.map { action =>
-    val stuff = queryEventNames.map { action =>
-      var items = List[String]()
-
-      for ( event <- recentEvents )
-        if (event.event == action && items.size <
-          ap.maxQueryEvents.getOrElse(defaultURAlgorithmParams.DefaultMaxQueryEvents)) {
-          items = event.targetEntityId.get :: items
-          // todo: may throw exception and we should ignore the event instead of crashing
-        }
-      // userBias may be None, which will cause no JSON output for this
-      BoostableCorrelators(action, items.distinct, itemSetBoost)
-    }
-    (rActions, recentEvents)
-   */
   /** get all metadata fields that potentially have boosts (not filters) */
   def getBoostedMetadata( query: Query ): List[BoostableCorrelators] = {
     val paramsBoostedFields = ap.fields.getOrElse(List.empty[Field]).filter( field => field.bias < 0 ).map { field =>

@@ -1,0 +1,20 @@
+{"eventTime": "2016-05-31T15:06:07.674+0000", "entityType": "user", "targetEntityType": "item", "targetEntityId": "Iphone 6", "entityId": "receipt 1", "event": "purchase"}
+{"eventTime": "2016-05-31T16:06:07.674+0000", "entityType": "user", "targetEntityType": "item", "targetEntityId": "Iphone case", "entityId": "receipt 1", "event": "purchase"}
+{"eventTime": "2016-05-31T17:06:07.674+0000", "entityType": "user", "targetEntityType": "item", "targetEntityId": "Iphone charger", "entityId": "receipt 1", "event": "purchase"}
+{"eventTime": "2016-05-31T18:06:07.674+0000", "entityType": "user", "targetEntityType": "item", "targetEntityId": "Iphone earphones", "entityId": "receipt 1", "event": "purchase"}
+{"eventTime": "2016-05-31T19:06:07.674+0000", "entityType": "user", "targetEntityType": "item", "targetEntityId": "Nexus", "entityId": "receipt 2", "event": "purchase"}
+{"eventTime": "2016-05-31T20:06:07.674+0000", "entityType": "user", "targetEntityType": "item", "targetEntityId": "micro usb cable", "entityId": "receipt 2", "event": "purchase"}
+{"eventTime": "2016-05-31T21:06:07.674+0000", "entityType": "user", "targetEntityType": "item", "targetEntityId": "Surface", "entityId": "receipt 3", "event": "purchase"}
+{"eventTime": "2016-05-31T22:06:07.674+0000", "entityType": "user", "targetEntityType": "item", "targetEntityId": "Iphone 5", "entityId": "receipt 4", "event": "purchase"}
+{"eventTime": "2016-05-31T23:06:07.674+0000", "entityType": "user", "targetEntityType": "item", "targetEntityId": "Iphone case", "entityId": "receipt 4", "event": "purchase"}
+{"eventTime": "2016-06-01T00:06:07.674+0000", "entityType": "user", "targetEntityType": "item", "targetEntityId": "Iphone earphones", "entityId": "receipt 4", "event": "purchase"}
+{"eventTime": "2016-06-01T01:06:07.674+0000", "entityType": "user", "targetEntityType": "item", "targetEntityId": "Iphone 4", "entityId": "receipt 4", "event": "purchase"}
+{"eventTime": "2016-06-01T02:06:07.674+0000", "entityType": "user", "targetEntityType": "item", "targetEntityId": "Iphone usb cable", "entityId": "receipt 4", "event": "purchase"}
+{"eventTime": "2016-06-01T03:06:07.674+0000", "entityType": "user", "targetEntityType": "item", "targetEntityId": "Iphone charger", "entityId": "receipt 4", "event": "purchase"}
+{"eventTime": "2016-06-01T04:06:07.674+0000", "entityType": "user", "targetEntityType": "item", "targetEntityId": "Galaxy", "entityId": "receipt 5", "event": "purchase"}
+{"eventTime": "2016-06-01T05:06:07.674+0000", "entityType": "user", "targetEntityType": "item", "targetEntityId": "micro usb cable", "entityId": "receipt 5", "event": "purchase"}
+{"entityId": "is1", "entityType": "item", "event": "$set", "eventTime": "2016-06-01T06:06:07.674+0000", "properties": {"items": ["Iphone 5"]}}
+{"entityId": "is2", "entityType": "item", "event": "$set", "eventTime": "2016-06-01T07:06:07.674+0000", "properties": {"items": ["Iphone charger", "Iphone case", "Iphone earphones", "Iphone usb cable"]}}
+{"entityId": "is3", "entityType": "item", "event": "$set", "eventTime": "2016-06-01T08:06:07.674+0000", "properties": {"items": ["Nexus", "micro usb cable"]}}
+{"entityId": "is4", "entityType": "item", "event": "$set", "eventTime": "2016-06-01T09:06:07.674+0000", "properties": {"items": ["Surface", "Galaxy"]}}
+{"entityId": "is5", "entityType": "item", "event": "$set", "eventTime": "2016-06-01T10:06:07.674+0000", "properties": {"items": ["soap", "legos", "tooth paste"]}}

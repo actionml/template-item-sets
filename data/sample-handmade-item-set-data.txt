@@ -1,0 +1,30 @@
+receipt 1,purchase,Iphone 6
+receipt 1,purchase,Iphone case
+receipt 1,purchase,Iphone charger
+receipt 1,purchase,Iphone earphones
+receipt 2,purchase,Nexus
+receipt 2,purchase,micro usb cable
+receipt 3,purchase,Surface
+receipt 4,purchase,Iphone 5
+receipt 4,purchase,Iphone case
+receipt 4,purchase,Iphone earphones
+receipt 4,purchase,Iphone 4
+receipt 4,purchase,Iphone usb cable
+receipt 4,purchase,Iphone charger
+receipt 5,purchase,Galaxy
+receipt 5,purchase,micro usb cable
+receipt 6,purchase,Iphone 6
+receipt 6,purchase,Iphone case
+receipt 7,purchase,Nexus
+receipt 8,purchase,Surface
+receipt 9,purchase,Iphone 5
+receipt 9,purchase,Iphone usb cable
+receipt 9,purchase,Iphone charger
+receipt 10,purchase,Galaxy
+receipt 10,purchase,nexus
+receipt 10,purchase,micro usb cable
+is1,$set,items:Iphone 5,Iphone 4:Iphone 6
+is2,$set,items:Iphone charger:Iphone case:Iphone earphones:Iphone usb cable
+is3,$set,items:Nexus:Galaxy:micro usb cable
+is4,$set,items:Surface
+is5,$set,items:soap:legos:tooth paste

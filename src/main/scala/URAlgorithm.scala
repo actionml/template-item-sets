@@ -549,12 +549,16 @@ class URAlgorithm(val ap: URAlgorithmParams)
   def getBiasedRecentUserActions(
     query: Query): (Seq[BoostableCorrelators], List[Event]) = {
 
+    val entityTypeName = if (query.itemSet.nonEmpty) "itemSet" else "user"
+    val entityId = query.itemSet.getOrElse(query.user.getOrElse("")) // itemSets in a query take precedence user will
+    // be ignored if both are passed in
+
     val recentEvents = try {
       LEventStore.findByEntity(
         appName = ap.appName,
         // entityType and entityId is specified for fast lookup
-        entityType = "user",
-        entityId = query.user.get,
+        entityType = entityTypeName,
+        entityId = entityId,
         // one query per eventName is not ideal, maybe one query for lots of events then split by eventName
         //eventNames = Some(Seq(action)),// get all and separate later
         eventNames = Some(queryEventNames),// get all and separate later

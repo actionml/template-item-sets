@@ -12,7 +12,7 @@ echo "Recommendations for user: receipt 1, should give results, including popula
 echo ""
 curl -H "Content-Type: application/json" -d '
 {
-    "user": "receipt 1"
+    "itemSet": "receipt 1"
 }' http://localhost:8000/queries.json
 echo ""
 

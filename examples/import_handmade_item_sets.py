@@ -30,10 +30,10 @@ def import_events(client, file):
     # For demonstration purpose action names are taken from input along with secondary actions on
     # For the UR add some item metadata
 
-    if (data[1] == "purchase"):
+    if (data[1] == "add-to-cart"):
       client.create_event(
         event=data[1],
-        entity_type="user",
+        entity_type="itemSet",
         entity_id=data[0],
         target_entity_type="item",
         target_entity_id=data[2],
@@ -44,7 +44,7 @@ def import_events(client, file):
     elif (data[1] == "view"):  # assumes other event type is 'view'
       client.create_event(
         event=data[1],
-        entity_type="user",
+        entity_type="itemSet",
         entity_id=data[0],
         target_entity_type="item",  # type of item in this action
         target_entity_id=data[2],
